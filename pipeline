@@ -1,0 +1,32 @@
+pipeline {
+agent any
+tools {
+maven &quot;MAVEN&quot;
+jdk &quot;JDK&quot;
+}
+stages {
+stage(&#39;Initialize&#39;){
+steps{
+echo &quot;PATH = ${M2_HOME}/bin:${PATH}&quot;
+echo &quot;M2_HOME = /opt/maven&quot;
+}
+}
+stage(&#39;Build&#39;) {
+steps {
+dir(&quot;/var/lib/jenkins/workspace/demopipelinetask/my-app&quot;) {
+sh &#39;mvn -B -DskipTests clean package&#39;
+}
+}
+}
+
+}
+post {
+always {
+junit(
+allowEmptyResults: true,
+testResults: &#39;*/test-reports/.xml&#39;
+)
+}
+}
+
+}
